@@ -30,19 +30,7 @@ api_host = "localhost"
 if Chef::Config[:solo]
   api_host = node[:solo_api_host]
 else
-  q_nodes = search(:node, "role:barbican-api AND chef_environment:#{node.chef_environment}")
-  if q_nodes.empty?
-     Chef::Log.info 'No api nodes found to synchronize with.'
-  else
-     my_id = node[:hostname].split('-')[1]
-     for q_node in q_nodes
-       host_id = q_node[:hostname].split('-')[1]
-       if my_id == host_id
-         api_host = q_node[:ipaddress]
-         break
-       end
-    end
-  end
+  api_host = node[:repose][:endpoint_hostname]
 end
 Chef::Log.debug "Final host ID: #{api_host}"
 
@@ -60,9 +48,20 @@ unless Chef::Config[:solo]
   node.save
 end
 
+# Configure authentication services.
+unless Chef::Config[:solo]
+  auth_info = data_bag_item(node.chef_environment, :auth)
+  node.set[:repose][:client_auth][:auth_provider] = auth_info[:auth_provider]
+  node.set[:repose][:client_auth][:username_admin] = auth_info[:username_admin]
+  node.set[:repose][:client_auth][:password_admin] = auth_info[:password_admin]
+  node.set[:repose][:client_auth][:tenant_id] = auth_info[:tenant_id]
+  node.set[:repose][:client_auth][:auth_uri] = auth_info[:auth_uri]
+  node.save
+end
+
 include_recipe "repose::filter-http-logging"
 include_recipe "repose::filter-ip-identity"
-include_recipe "repose::service-dist-datastore"
+include_recipe "repose::filter-client-auth"
 include_recipe "repose"
 
 #TODO(jwood) Must do this until we fix chunking issue with uWSGI.
