@@ -25,21 +25,21 @@
 
 include_recipe "barbican::_base"
 
-# Build a map of host name to IP addresses, for queue nodes in my cluster.
+# Find the Repose target endpoint (typically a load balancer).
 api_host = "localhost"
 if Chef::Config[:solo]
   api_host = node[:solo_api_host]
 else
-  api_host = node[:repose][:endpoint_hostname]
+  api_host = node[:repose][:target_hostname]
 end
 Chef::Log.debug "Final host ID: #{api_host}"
 
 # Configure Repose:
 node.set['repose']['endpoints'] = [
   { 'id' => 'barbican_api',
-    'protocol' => node[:repose][:endpoint_protocol],
+    'protocol' => node[:repose][:target_protocol],
     'hostname' => api_host,
-    'port' => node[:repose][:endpoint_port],
+    'port' => node[:repose][:target_port],
     'root_path' => '/',
     'default' => true,
   }
