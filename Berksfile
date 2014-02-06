@@ -2,5 +2,5 @@ site :opscode
 
 metadata
 
-cookbook 'barbican', path: '../barbican'
+cookbook 'repose', git: 'git@github.rackspace.com:stev1090/cookbook-repose.git'
 
