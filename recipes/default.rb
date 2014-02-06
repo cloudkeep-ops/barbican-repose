@@ -34,20 +34,6 @@ if node['repose']['client_auth']['databag_name']
   node.set['repose']['client_auth']['auth_uri'] = auth_info['auth_uri']
 end
 
-unless Chef::Config[:solo]
-
-  node.set['repose']['peer_search_enabled'] = true
-  
-  # call the load_peers cookbook to populate the node['repose']['peers']
-  # attribute with data form other repose nodes
-  include_recipe 'repose::load_peers'
-
-  #configure services
-  node.set['repose']['services'] = ['dist-datastore']
-  node.set['repose']['dist_datastore']['allowed_hosts'] = node['repose']['peers'].collect{|peer| peer['ipaddress']}
-
-end
-
 include_recipe "repose"
 
 #TODO(jwood) Must do this until we fix chunking issue with uWSGI.
