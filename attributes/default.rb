@@ -1,7 +1,7 @@
 # repose target
 default['repose']['target_port'] = 9311
 default['repose']['target_protocol'] = 'http'
-default['repose']['target_hostname'] = 'www.myapp.com'
+default['repose']['target_hostname'] = 'localhost'
 
 # repose listening ports
 normal['repose']['port'] = 8080
@@ -9,6 +9,8 @@ normal['repose']['ssl_port'] = 8443
 # repose filters
 normal['repose']['filters'] = ['http-logging', 'ip-identity', 'client-auth']
 
+#TODO(dmend): This should probably be done in the recipe.  I'm seeing weird 
+# node object merging issues with this here. :-\
 normal['repose']['endpoints'] = [
   { 'id' => 'barbican_api',
     'protocol' => node['repose']['target_protocol'],
