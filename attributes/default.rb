@@ -7,7 +7,7 @@ default['repose']['target_hostname'] = 'localhost'
 normal['repose']['port'] = 8080
 normal['repose']['ssl_port'] = 8443
 # repose filters
-normal['repose']['filters'] = ['http-logging', 'ip-identity', 'client-auth', 'api-validator']
+normal['repose']['filters'] = ['content-normalization', 'http-logging', 'ip-identity', 'client-auth', 'api-validator']
 
 #TODO(dmend): This should probably be done in the recipe.  I'm seeing weird 
 # node object merging issues with this here. :-\
