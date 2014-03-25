@@ -34,7 +34,7 @@ normal['repose']['client_auth']['request_groups'] = false
 normal['repose']['client_auth']['auth_provider'] = 'OPENSTACK'
 normal['repose']['client_auth']['tenant_id'] = ''
 normal['repose']['client_auth']['auth_uri'] = 'https://identity.api.rackspacecloud.com/v2.0/'
-
+default['repose']['client_auth']['mapping_regex'] = ['.*/v1/([-|\w]+)/?.*']
 normal['repose']['client_auth']['delegable'] = false
-normal['repose']['client_auth']['tenanted'] = false
+normal['repose']['client_auth']['tenanted'] = true
 normal['repose']['client_auth']['request_groups'] = false
