@@ -23,15 +23,54 @@
 
 # Find the Repose target endpoint (typically a load balancer).
 
+auth_filters = [
+  {
+    'uri_regex' => '/',
+    'configuration' => 'client-auth-n-version.cfg.xml',
+    'auth_provider' =>  'OPENSTACK',
+    'username_admin' => 'admin',
+    'password_admin' => 'password',
+    'tenant_id' => 'tenant-id',
+    'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
+    'tenanted' => false,
+    'mapping_regex' => [],
+    'mapping_type' => 'CLOUD',
+    'delegable' => false,
+    'request_groups' => true,
+    'token_cache_timeout' => 600000,
+    'group_cache_timeout' => 600000,
+    'endpoints_in_header' => false
+  },
+  {
+    'uri_regex' => '/.+',
+    'configuration' => 'client-auth-n.cfg.xml',
+    'auth_provider' =>  'OPENSTACK',
+    'username_admin' => 'admin',
+    'password_admin' => 'password',
+    'tenant_id' => 'tenant-id',
+    'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
+    'tenanted' => true,
+    'mapping_regex' => ['.*/v1/([-|\w]+)/?.*'],
+    'mapping_type' => 'CLOUD',
+    'delegable' => false,
+    'request_groups' => true,
+    'token_cache_timeout' => 600000,
+    'group_cache_timeout' => 600000,
+    'endpoints_in_header' => false
+  }
+]
 # Configure authentication services.
 if node['repose']['client_auth']['databag_name']
   Chef::Log.info node['repose']['client_auth']['databag_name']
   auth_info = data_bag_item(node['repose']['client_auth']['databag_name'], 'repose')
-  node.set['repose']['client_auth']['auth_provider'] = auth_info['auth_provider']
-  node.set['repose']['client_auth']['username_admin'] = auth_info['username_admin']
-  node.set['repose']['client_auth']['password_admin'] = auth_info['password_admin']
-  node.set['repose']['client_auth']['tenant_id'] = auth_info['tenant_id']
-  node.set['repose']['client_auth']['auth_uri'] = auth_info['auth_uri']
+  auth_filters.each do |auth_filter|
+    auth_filter['auth_provider'] = auth_info['auth_provider']
+    auth_filter['username_admin'] = auth_info['username_admin']
+    auth_filter['password_admin'] = auth_info['password_admin']
+    auth_filter['tenant_id'] = auth_info['tenant_id']
+    auth_filter['auth_uri'] = auth_info['auth_uri']
+  end
+  node.set['repose']['client_auth']['filters'] = auth_filters
 end
 
 include_recipe "repose"

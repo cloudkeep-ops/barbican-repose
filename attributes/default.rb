@@ -1,7 +1,7 @@
 # repose target
-default['repose']['target_port'] = 9311
-default['repose']['target_protocol'] = 'http'
-default['repose']['target_hostname'] = 'localhost'
+normal['repose']['target_port'] = 9311
+normal['repose']['target_protocol'] = 'http'
+normal['repose']['target_hostname'] = 'localhost'
 
 # repose listening ports
 normal['repose']['port'] = 8080
@@ -28,13 +28,39 @@ normal['repose']['peer_search_role'] = 'barbican-repose'
 
 #configure client auth
 normal['repose']['client_auth']['databag_name'] = nil
-normal['repose']['client_auth']['delegable'] = false
-normal['repose']['client_auth']['tenanted'] = false
-normal['repose']['client_auth']['request_groups'] = false
-normal['repose']['client_auth']['auth_provider'] = 'OPENSTACK'
-normal['repose']['client_auth']['tenant_id'] = ''
-normal['repose']['client_auth']['auth_uri'] = 'https://identity.api.rackspacecloud.com/v2.0/'
-
-normal['repose']['client_auth']['delegable'] = false
-normal['repose']['client_auth']['tenanted'] = false
-normal['repose']['client_auth']['request_groups'] = false
+normal['repose']['client_auth']['filters'] = [
+  {
+    'uri_regex' => '/',
+    'configuration' => 'client-auth-n-version.cfg.xml',
+    'auth_provider' =>  'OPENSTACK',
+    'username_admin' => 'admin',
+    'password_admin' => 'password',
+    'tenant_id' => 'tenant-id',
+    'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
+    'tenanted' => false,
+    'mapping_regex' => [],
+    'mapping_type' => 'CLOUD',
+    'delegable' => false,
+    'request_groups' => true,
+    'token_cache_timeout' => 600000,
+    'group_cache_timeout' => 600000,
+    'endpoints_in_header' => false
+  },
+  {
+    'uri_regex' => '/.+',
+    'configuration' => 'client-auth-n.cfg.xml',
+    'auth_provider' =>  'OPENSTACK',
+    'username_admin' => 'admin',
+    'password_admin' => 'password',
+    'tenant_id' => 'tenant-id',
+    'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
+    'tenanted' => true,
+    'mapping_regex' => ['.*/v1/([-|\w]+)/?.*'],
+    'mapping_type' => 'CLOUD',
+    'delegable' => false,
+    'request_groups' => true,
+    'token_cache_timeout' => 600000,
+    'group_cache_timeout' => 600000,
+    'endpoints_in_header' => false
+  }
+]
