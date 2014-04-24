@@ -3,13 +3,13 @@
 # Recipe:: default
 #
 # Copyright (C) 2013 Rackspace, Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #    http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,23 +25,6 @@
 
 auth_filters = [
   {
-    'uri_regex' => '/',
-    'configuration' => 'client-auth-n-version.cfg.xml',
-    'auth_provider' =>  'OPENSTACK',
-    'username_admin' => 'admin',
-    'password_admin' => 'password',
-    'tenant_id' => 'tenant-id',
-    'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
-    'tenanted' => false,
-    'mapping_regex' => [],
-    'mapping_type' => 'CLOUD',
-    'delegable' => false,
-    'request_groups' => true,
-    'token_cache_timeout' => 600000,
-    'group_cache_timeout' => 600000,
-    'endpoints_in_header' => false
-  },
-  {
     'uri_regex' => '/.+',
     'configuration' => 'client-auth-n.cfg.xml',
     'auth_provider' =>  'OPENSTACK',
@@ -51,6 +34,7 @@ auth_filters = [
     'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
     'tenanted' => true,
     'mapping_regex' => ['.*/v1/([-|\w]+)/?.*'],
+    'version_regex' => ['/'],
     'mapping_type' => 'CLOUD',
     'delegable' => false,
     'request_groups' => true,

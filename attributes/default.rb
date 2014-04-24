@@ -9,7 +9,7 @@ normal['repose']['ssl_port'] = 8443
 # repose filters
 normal['repose']['filters'] = ['http-logging', 'content-normalization', 'ip-identity', 'client-auth', 'api-validator']
 
-#TODO(dmend): This should probably be done in the recipe.  I'm seeing weird 
+#TODO(dmend): This should probably be done in the recipe.  I'm seeing weird
 # node object merging issues with this here. :-\
 normal['repose']['endpoints'] = [
   { 'id' => 'barbican_api',
@@ -30,23 +30,6 @@ normal['repose']['peer_search_role'] = 'barbican-repose'
 normal['repose']['client_auth']['databag_name'] = nil
 normal['repose']['client_auth']['filters'] = [
   {
-    'uri_regex' => '/',
-    'configuration' => 'client-auth-n-version.cfg.xml',
-    'auth_provider' =>  'OPENSTACK',
-    'username_admin' => 'admin',
-    'password_admin' => 'password',
-    'tenant_id' => 'tenant-id',
-    'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
-    'tenanted' => false,
-    'mapping_regex' => [],
-    'mapping_type' => 'CLOUD',
-    'delegable' => false,
-    'request_groups' => true,
-    'token_cache_timeout' => 600000,
-    'group_cache_timeout' => 600000,
-    'endpoints_in_header' => false
-  },
-  {
     'uri_regex' => '/.+',
     'configuration' => 'client-auth-n.cfg.xml',
     'auth_provider' =>  'OPENSTACK',
@@ -56,6 +39,7 @@ normal['repose']['client_auth']['filters'] = [
     'auth_uri' => 'https://identity.api.rackspacecloud.com/v2.0',
     'tenanted' => true,
     'mapping_regex' => ['.*/v1/([-|\w]+)/?.*'],
+    'version_regex' => ['/'],
     'mapping_type' => 'CLOUD',
     'delegable' => false,
     'request_groups' => true,
